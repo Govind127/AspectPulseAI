@@ -1,0 +1,18 @@
+aspectpulse-ai/
+├── .gitignore
+├── README.md
+├── requirements.txt
+├── app.py
+├── main.py
+├── src/
+│   ├── __init__.py
+│   ├── baselines.py
+│   ├── config.py
+│   ├── data_pipeline.py
+│   ├── extract_data.py
+│   ├── inference_explain.py
+│   ├── predictive_analytics.py
+│   ├── train_apc.py
+│   └── train_ate.py
+└── static/
+    └── index.html
