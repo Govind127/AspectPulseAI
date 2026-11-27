@@ -1,31 +1,21 @@
-# AspectPulse AI — Granular Aspect-Based Sentiment Analysis & Predictive Analytics Engine
+# Project ABSA — VS Code Local Workspace
 
-A full-stack, three-phase NLP and econometric analytics pipeline that transforms unstructured product reviews into granular aspect polarities, token-level Captum attribution explanations, and statistical quality/risk forecasts—served via FastAPI and SQLite.
+## 1. Setup Environment (VS Code Terminal)
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+# Install CUDA-matched PyTorch (example for CUDA 12.6):
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+pip install -r requirements.txt
+```
+*(On Linux/macOS, activate with `source .venv/bin/activate` and update `.vscode/settings.json` interpreter path to `${workspaceFolder}/.venv/bin/python`.)*
 
----
-
-## System Architecture
-
-```text
-Unstructured Review
-        │
-        ▼
-┌──────────────────────────────────────────────────────────┐
-│ Phase 1: Aspect Term Extraction (ATE)                    │
-│ Fine-tuned RoBERTa BIO Sequence Tagger (B-ASP/I-ASP/O)   │
-└───────────────────────────┬──────────────────────────────┘
-                            │ Extracted Aspect Spans
-                            ▼
-┌──────────────────────────────────────────────────────────┐
-│ Phase 2: Aspect Polarity & Captum XAI (APC)              │
-│ Sentence-Aspect Pair Classifier + Integrated Gradients   │
-└───────────────────────────┬──────────────────────────────┘
-                            │ Weighted Aspect Vector (X1..X7)
-                            ▼
-┌──────────────────────────────────────────────────────────┐
-│ Phase 3: Predictive Analytics & Risk Engine              │
-│ • Multiple & Quadratic OLS Regression (Star Rating)      │
-│ • Dummy Logit & Probit Models (Return Risk Probability)  │
-│ • Apriori Association Rule Mining (Defect Co-occurrence) │
-│ • Simple Exponential Smoothing (Sentiment Forecasting)   │
-└──────────────────────────────────────────────────────────┘
+## 2. Run Pipeline Stages
+`data/unified_absa_dataset.csv` is already included in `data/`. Run stages via CLI or VS Code Run & Debug (`F5`):
+```bash
+python main.py --step db        # Load CSV into SQLite (data/absa_store.db)
+python main.py --step baseline  # Run TF-IDF + LinearSVC benchmark
+python main.py --step ate       # Train Phase 1 DeBERTa-v3 BIO Tagger
+python main.py --step apc       # Train Phase 2 DeBERTa-v3 Aspect Polarity Classifier
+python main.py --step demo --text "Fast charging speed and crisp display, though the trackpad rattles."
+```

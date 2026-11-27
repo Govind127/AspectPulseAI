@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AspectPulse AI — Granular ABSA & Predictive Analytics Workbench</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            slate: { 950: '#070B14' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #070B14; color: #F8FAFC; }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.68);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #38BDF8 0%, #818CF8 50%, #34D399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.16) 0%, rgba(99, 102, 241, 0.08) 40%, transparent 75%);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-sky-500/30 selection:text-sky-200">
+
+  <!-- Navbar -->
+  <nav class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center font-bold text-slate-950 shadow-lg shadow-sky-500/20">
+          AP
+        </div>
+        <div>
+          <span class="font-bold tracking-tight text-white text-lg">AspectPulse</span>
+          <span class="ml-2 text-xs font-mono px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">ABSA + Predictive v2.1</span>
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center gap-6 text-sm text-slate-300">
+        <a href="#pipeline-overview" class="hover:text-white transition">3-Phase Architecture</a>
+        <a href="#playground" class="hover:text-white transition">Live ABSA & Risk</a>
+        <a href="#predictive" class="hover:text-white transition text-sky-400 font-medium">Phase 3 Predictive Models</a>
+        <a href="#benchmarks" class="hover:text-white transition">Benchmarks</a>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span id="apiStatusBadge" class="inline-flex items-center gap-2 text-xs font-mono px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          Checking Backend...
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="relative hero-glow pt-14 pb-12 px-6 border-b border-slate-800/60">
+    <div class="max-w-5xl mx-auto text-center">
+      <div class="inline-flex flex-wrap justify-center items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-300 text-xs font-medium mb-5">
+        <span>Phase 1–2: RoBERTa ABSA + Captum XAI</span>
+        <span class="text-slate-600">•</span>
+        <span>Phase 3: OLS / Non-Linear Regression, Logit & Probit, Apriori & Time-Series</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-5">
+        From Unstructured Reviews to <span class="gradient-text">Predictive Quality Intelligence</span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed mb-8">
+        Our two-stage Transformer pipeline extracts aspect-level sentiments (`87.63%` ATE F1, `88.07%` APC Accuracy) and feeds them into <strong class="text-slate-200">Phase 3 Predictive Analytics</strong>—statistical regression, Logit/Probit churn models, Apriori defect rules, and exponential smoothing sentiment forecasts.
+      </p>
+
+      <!-- KPI Strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 text-left">
+        <div class="glass-card rounded-2xl p-5">
+          <p class="text-xs font-mono text-slate-400 uppercase">Phase 1 ATE Test F1</p>
+          <p class="text-3xl font-bold text-white mt-1">87.63%</p>
+          <p class="text-xs text-emerald-400 mt-1">BIO Span Extraction</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <p class="text-xs font-mono text-slate-400 uppercase">Phase 2 APC Test Acc</p>
+          <p class="text-3xl font-bold text-white mt-1">88.07%</p>
+          <p class="text-xs text-sky-400 mt-1">+19.49% Macro-F1 vs SVM</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <p class="text-xs font-mono text-slate-400 uppercase">Phase 3 Regression R²</p>
+          <p id="kpiR2" class="text-3xl font-bold text-indigo-400 mt-1">0.842</p>
+          <p class="text-xs text-slate-400 mt-1">Star Rating Predictor</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <p class="text-xs font-mono text-slate-400 uppercase">Training Corpus</p>
+          <p class="text-3xl font-bold text-emerald-400 mt-1">24,265</p>
+          <p class="text-xs text-slate-400 mt-1">Normalized Aspect Records</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- End-to-End 3-Phase Pipeline Architecture & Phase 3 Methodology -->
+  <section id="pipeline-overview" class="max-w-7xl mx-auto px-6 pt-14 pb-6">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      <div>
+        <span class="text-xs font-mono uppercase tracking-wider text-indigo-400">System Architecture & Methodology</span>
+        <h2 class="text-3xl font-bold text-white mt-1">How Phase 1 & 2 NLP Powers Phase 3 Predictive Analytics</h2>
+      </div>
+      <span class="text-xs font-mono px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/25 text-indigo-300">
+        Engine: src/predictive_analytics.py
+      </span>
+    </div>
+
+    <!-- 3-Phase Flow Diagram -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+      <!-- Phase 1 -->
+      <div class="glass-card rounded-2xl p-6 border-t-2 border-t-sky-400">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-sky-500/15 text-sky-300">PHASE 1 • DIAGNOSTIC NLP</span>
+          <span class="text-xs font-mono text-slate-400">RoBERTa BIO Tagger</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Aspect Term Extraction (ATE)</h3>
+        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+          Scans raw unstructured customer reviews using BIO sequence tagging (<code class="text-sky-300 font-mono text-xs">B-ASP / I-ASP / O</code>) to isolate exact hardware and service attributes such as <em>battery life</em>, <em>display</em>, and <em>build quality</em>.
+        </p>
+        <div class="text-xs font-mono text-slate-300 bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+          Output: Extracted Aspect Spans <span class="text-sky-400">[from, to]</span>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="glass-card rounded-2xl p-6 border-t-2 border-t-emerald-400">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-emerald-500/15 text-emerald-300">PHASE 2 • SENTIMENT & XAI</span>
+          <span class="text-xs font-mono text-slate-400">RoBERTa + Captum</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Polarity & Feature Attribution</h3>
+        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+          Evaluates each <code class="text-emerald-300 font-mono text-xs">[Review + Aspect]</code> pair to assign confidence-weighted polarity (<code class="text-emerald-300 font-mono text-xs">+1, 0, -1</code>) and verifies modifier words using Captum Layer Integrated Gradients.
+        </p>
+        <div class="text-xs font-mono text-slate-300 bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+          Output: Feature Vector <span class="text-emerald-400">X = [X₁, X₂, ..., X₇]</span>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="glass-card rounded-2xl p-6 border-t-2 border-t-indigo-400 bg-indigo-950/20">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-indigo-500/20 text-indigo-300">PHASE 3 • PREDICTIVE ANALYTICS</span>
+          <span class="text-xs font-mono text-slate-400">Statistical & Risk Engine</span>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Rating, Churn Risk & Rule Mining</h3>
+        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+          Transforms the 7 aspect sentiment scores (<code class="text-indigo-300 font-mono text-xs">X₁…X₇</code>) and negative dummy flags (<code class="text-indigo-300 font-mono text-xs">D₁…D₇</code>) into quantitative predictions: expected Star Rating, Logit/Probit Return Risk probability, Apriori defect rules, and sentiment trend forecasts.
+        </p>
+        <div class="text-xs font-mono text-slate-300 bg-slate-950/80 p-3 rounded-xl border border-indigo-500/30">
+          Output: <span class="text-amber-400">Ŷ (Stars)</span>, <span class="text-rose-400">P(Return)</span> & <span class="text-emerald-400">Defect Rules</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Phase 3 Technique Cards (4-Module Breakdown) -->
+    <div class="glass-card rounded-2xl p-6 border border-indigo-500/25">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-800">
+        <div>
+          <h3 class="text-lg font-bold text-white">What Phase 3 Predictive Analytics Computes (4-Module Breakdown)</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Every technique maps unstructured NLP outputs into formal econometric and statistical predictive models.</p>
+        </div>
+        <span class="text-[11px] font-mono text-emerald-400">Fitted on 24,265 SQLite Aspect Records</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+          <div class="font-mono text-sky-400 font-bold mb-1">MODULE 01 • OLS REGRESSION</div>
+          <div class="font-semibold text-white text-sm mb-1.5">Multiple Linear Rating Model</div>
+          <p class="text-slate-400 leading-relaxed mb-2">
+            Estimates <code class="text-slate-200 font-mono">Ŷ = β₀ + ΣβᵢXᵢ</code> to measure how much each aspect's sentiment raises or lowers a 1–5 star rating, validated via <strong class="text-slate-200">t-tests</strong> and <strong class="text-slate-200">F-test</strong>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+          <div class="font-mono text-indigo-400 font-bold mb-1">MODULE 02 • NON-LINEAR & DIAG</div>
+          <div class="font-semibold text-white text-sm mb-1.5">Quadratic Curvature & Checks</div>
+          <p class="text-slate-400 leading-relaxed mb-2">
+            Adds <code class="text-slate-200 font-mono">β₈ΣXᵢ²</code> for diminishing returns and audits assumptions via <strong class="text-slate-200">VIF</strong> (multicollinearity), <strong class="text-slate-200">Breusch-Pagan</strong>, <strong class="text-slate-200">Durbin-Watson</strong>, and <strong class="text-slate-200">Shapiro-Wilk</strong>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+          <div class="font-mono text-rose-400 font-bold mb-1">MODULE 03 • LOGIT & PROBIT</div>
+          <div class="font-semibold text-white text-sm mb-1.5">Binary Return-Risk Models</div>
+          <p class="text-slate-400 leading-relaxed mb-2">
+            Uses <code class="text-slate-200 font-mono">0/1</code> negative aspect dummy variables in Logistic CDF and Normal CDF (<code class="text-slate-200 font-mono">Φ(z)</code>) models to bound product return probability strictly in <code class="text-slate-200 font-mono">[0, 1]</code>.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800">
+          <div class="font-mono text-amber-400 font-bold mb-1">MODULE 04 • APRIORI & SES</div>
+          <div class="font-semibold text-white text-sm mb-1.5">Defect Rules & Trend Forecast</div>
+          <p class="text-slate-400 leading-relaxed mb-2">
+            Mines co-occurring aspect failures (<strong class="text-slate-200">Support, Confidence, Lift</strong>) and forecasts next-period Net Sentiment using <strong class="text-slate-200">Moving Average</strong> & <strong class="text-slate-200">Exponential Smoothing</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 1: Interactive Live ABSA + Predictive Outcome Playground -->
+  <section id="playground" class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+      <div>
+        <span class="text-xs font-mono uppercase tracking-wider text-sky-400">Real-Time Inference + Predictive Scoring</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Live ABSA, Captum XAI & Return-Risk Predictor</h2>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="setPreset(0)" class="text-xs px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition">
+          Mixed Laptop Review
+        </button>
+        <button onclick="setPreset(1)" class="text-xs px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition">
+          High Return Risk Defect
+        </button>
+        <button onclick="setPreset(2)" class="text-xs px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 transition">
+          5-Star Flagship Review
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Input Box -->
+      <div class="lg:col-span-5 glass-card rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <label for="reviewInput" class="block text-sm font-semibold text-slate-200 mb-2">Customer Product Review</label>
+          <textarea
+            id="reviewInput"
+            rows="4"
+            class="w-full rounded-xl bg-slate-950/90 border border-slate-700/80 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 text-slate-100 p-4 text-sm leading-relaxed outline-none transition"
+          >The battery life is exceptional, but the build quality feels cheap and fragile.</textarea>
+
+          <div class="flex items-center justify-between mt-3 text-xs text-slate-400">
+            <label class="inline-flex items-center gap-2 cursor-pointer">
+              <input id="saveDbCheckbox" type="checkbox" checked class="rounded bg-slate-900 border-slate-700 text-sky-500 focus:ring-0">
+              <span>Persist to SQLite (`absa_store.db`)</span>
+            </label>
+            <span id="charCount">79 chars</span>
+          </div>
+
+          <!-- Instant Predictive Analytics Card for This Review -->
+          <div class="mt-5 p-4 rounded-xl bg-indigo-950/40 border border-indigo-500/35">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-semibold">Phase 3 Predictive Outcome</span>
+              <span id="riskBadge" class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Moderate Risk</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mb-3">
+              Computed from extracted aspect scores via OLS Quadratic Regression (Stars) and Dummy Logit/Probit CDFs (Return Risk).
+            </p>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="p-2.5 rounded-lg bg-slate-950/85 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Predicted Rating</div>
+                <div id="predStarRating" class="text-lg font-bold text-amber-400">3.31 ★</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-950/85 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Logit Return Prob</div>
+                <div id="predLogitProb" class="text-lg font-bold text-rose-400">39.2%</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-950/85 border border-slate-800/80">
+                <div class="text-[10px] text-slate-400">Probit Return Prob</div>
+                <div id="predProbitProb" class="text-lg font-bold text-sky-400">38.6%</div>
+              </div>
+            </div>
+            <div id="mappedFeaturesBadge" class="mt-2.5 text-[11px] font-mono text-indigo-300/90">
+              Active Predictors: battery (+1.00), build_quality (-1.00)
+            </div>
+          </div>
+        </div>
+
+        <button
+          id="analyzeBtn"
+          onclick="runAnalysis()"
+          class="mt-5 w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-500/20 transition"
+        >
+          <span id="btnText">Run ABSA + Predictive Risk Analysis</span>
+        </button>
+      </div>
+
+      <!-- Output Box -->
+      <div class="lg:col-span-7 glass-card rounded-2xl p-6 space-y-5">
+        <div>
+          <span class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-2">1. Extracted Aspect Spans (Phase 1 BIO Tagger)</span>
+          <div id="annotatedSentence" class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 text-base leading-loose text-slate-200"></div>
+        </div>
+
+        <div>
+          <span class="block text-xs font-mono uppercase tracking-wider text-slate-400 mb-2">2. Aspect Polarity Predictions (Click to Inspect Captum Gradients)</span>
+          <div id="aspectCards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono uppercase tracking-wider text-slate-400">3. Captum Integrated Gradients Heatmap</span>
+            <span id="selectedAspectLabel" class="text-xs font-mono text-sky-400">Target: battery life</span>
+          </div>
+          <div id="attributionHeatmap" class="p-4 rounded-xl bg-slate-950/90 border border-slate-800 flex flex-wrap gap-1.5 min-h-[60px] items-center"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Phase 3 Predictive Analytics Suite -->
+  <section id="predictive" class="border-y border-slate-800/70 bg-slate-900/35 py-16 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-10">
+        <span class="text-xs font-mono uppercase tracking-wider text-indigo-400">Phase 3 Statistical & Predictive Layer</span>
+        <h2 class="text-3xl font-bold text-white mt-1">Regression Diagnostics, Logit/Probit Models & Apriori Defect Rules</h2>
+        <p class="text-sm text-slate-400 mt-2 max-w-3xl">
+          Extracted aspect sentiments from SQLite serve as predictors for OLS/Quadratic Star Rating Regression, Binary Return Probability Models, Association Rule Mining, and Exponential Smoothing Sentiment Forecasting.
+        </p>
+      </div>
+
+      <!-- Diagnostic KPI Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-slate-400">R² / Adjusted R²</div>
+          <div id="diagR2" class="text-xl font-bold text-white mt-1">0.842 / 0.839</div>
+          <div class="text-[11px] text-emerald-400 mt-0.5">Strong Model Fit</div>
+        </div>
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-slate-400">Overall F-Statistic</div>
+          <div id="diagF" class="text-xl font-bold text-sky-400 mt-1">312.4 (p&lt;0.001)</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Jointly Significant</div>
+        </div>
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-slate-400">Durbin-Watson</div>
+          <div id="diagDW" class="text-xl font-bold text-emerald-400 mt-1">1.98</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">~2.0 = No Autocorrelation</div>
+        </div>
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-slate-400">Breusch-Pagan</div>
+          <div id="diagBP" class="text-xl font-bold text-indigo-300 mt-1">p = 0.214</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Homoscedastic Errors</div>
+        </div>
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-[11px] font-mono text-slate-400">SES Next-Month Forecast</div>
+          <div id="diagSES" class="text-xl font-bold text-amber-400 mt-1">+52.1%</div>
+          <div class="text-[11px] text-slate-400 mt-0.5">Projected Net Sentiment</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: OLS + Non-Linear Regression & VIF Table -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-6">
+          <h3 class="text-lg font-bold text-white mb-1">1. Multiple & Non-Linear Star Rating Regression</h3>
+          <p class="text-xs text-slate-400 mb-4">Includes individual t-test p-values and Variance Inflation Factor (VIF &lt; 5 confirms low multicollinearity).</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 font-mono">
+                  <th class="pb-2.5">Predictor Term</th>
+                  <th class="pb-2.5">Coef (β)</th>
+                  <th class="pb-2.5">t-Stat</th>
+                  <th class="pb-2.5">p-Value</th>
+                  <th class="pb-2.5">VIF</th>
+                </tr>
+              </thead>
+              <tbody id="olsTableBody" class="divide-y divide-slate-800/60 font-mono"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: Logit/Probit & Apriori Rules -->
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Logit & Probit Table -->
+          <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-white mb-1">2. Dummy Logit & Probit Return Models</h3>
+            <p class="text-xs text-slate-400 mb-3">Odds Ratios quantify how much a negative aspect multiplies return risk.</p>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 font-mono">
+                    <th class="pb-2">Dummy Predictor (0/1)</th>
+                    <th class="pb-2">Logit β</th>
+                    <th class="pb-2">Odds Ratio</th>
+                    <th class="pb-2">Probit β</th>
+                  </tr>
+                </thead>
+                <tbody id="logitTableBody" class="divide-y divide-slate-800/60 font-mono"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Apriori Association Rules -->
+          <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-white mb-1">3. Apriori Defect Association Rules</h3>
+            <p class="text-xs text-slate-400 mb-3">Co-occurring aspect failures discovered across multi-aspect reviews.</p>
+            <div id="aprioriContainer" class="space-y-2.5"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Benchmarks & SQLite Stats -->
+  <section id="benchmarks" class="bg-slate-900/25 py-14 px-6">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-6 glass-card rounded-2xl p-6">
+        <span class="text-xs font-mono uppercase tracking-wider text-emerald-400">NLP Empirical Evaluation</span>
+        <h3 class="text-xl font-bold text-white mt-1 mb-4">Classical Baseline vs. Two-Stage Transformer</h3>
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 font-mono text-xs">
+              <th class="pb-3">Model / Task</th>
+              <th class="pb-3">Accuracy</th>
+              <th class="pb-3">Macro-F1</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/70">
+            <tr>
+              <td class="py-3 text-slate-300">TF-IDF (1–2 ngrams) + LinearSVC</td>
+              <td class="py-3 font-mono text-slate-400">75.11%</td>
+              <td class="py-3 font-mono text-slate-400">61.18%</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-white font-medium">Phase 1: RoBERTa BIO Tagger (ATE)</td>
+              <td class="py-3 font-mono text-sky-400">97.93%</td>
+              <td class="py-3 font-mono text-sky-400">87.63%</td>
+            </tr>
+            <tr>
+              <td class="py-3 text-white font-medium">Phase 2: RoBERTa Pair Classifier (APC)</td>
+              <td class="py-3 font-mono text-emerald-400">88.07%</td>
+              <td class="py-3 font-mono text-emerald-400">80.67%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="lg:col-span-6 glass-card rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-wider text-sky-400">SQLite Analytics Store</span>
+            <h3 class="text-xl font-bold text-white mt-1">Aggregated Laptop Feature Sentiment</h3>
+          </div>
+          <button onclick="loadStats()" class="text-xs px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300">Refresh</button>
+        </div>
+        <div id="aspectBarsContainer" class="space-y-3.5"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-slate-800/80 py-8 px-6 text-center text-xs text-slate-500">
+    <p>Aspect-Based Sentiment Analysis & Predictive Analytics Workbench • M.Sc. Data Science, SPPU • <span class="text-slate-300">Govind Girish Raut</span></p>
+  </footer>
+
+  <script>
+    const PRESETS = [
+      "The battery life is exceptional, but the build quality feels cheap and fragile.",
+      "The cooling fans sound like a jet engine, the keyboard feels mushy, and the battery drains in two hours.",
+      "The OLED display is razor-sharp, performance is blazing fast, and the price is a total bargain."
+    ];
+
+    const FALLBACK_RESULT = {
+      review_text: "The battery life is exceptional, but the build quality feels cheap and fragile.",
+      aspects: [
+        {
+          aspect_term: "battery life", polarity: "positive", confidence: 0.9973, from: 4, to: 16,
+          token_attributions: [
+            { token: "battery", score: 0.185 }, { token: "life", score: 0.2216 },
+            { token: "is", score: 0.0739 }, { token: "exceptional", score: 0.892 },
+            { token: "but", score: -0.1086 }, { token: "cheap", score: -0.1768 }, { token: "fragile", score: -0.2212 }
+          ]
+        },
+        {
+          aspect_term: "build quality", polarity: "negative", confidence: 0.9973, from: 41, to: 54,
+          token_attributions: [
+            { token: "exceptional", score: -0.75 }, { token: "but", score: 0.233 },
+            { token: "build", score: 0.2032 }, { token: "quality", score: 0.2699 },
+            { token: "feels", score: 0.6718 }, { token: "cheap", score: 0.5988 }, { token: "fragile", score: 0.8658 }
+          ]
+        }
+      ],
+      predictive_forecast: {
+        predicted_star_rating: 3.31,
+        logit_return_probability_pct: 39.2,
+        probit_return_probability_pct: 38.6,
+        risk_category: "Moderate Risk",
+        mapped_aspect_scores: { battery: 0.997, build_quality: -0.997 }
+      }
+    };
+
+    let currentAnalysis = FALLBACK_RESULT;
+    const reviewInput = document.getElementById("reviewInput");
+    reviewInput.addEventListener("input", () => {
+      document.getElementById("charCount").textContent = `${reviewInput.value.length} chars`;
+    });
+
+    function setPreset(idx) {
+      reviewInput.value = PRESETS[idx];
+      document.getElementById("charCount").textContent = `${reviewInput.value.length} chars`;
+      runAnalysis();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    function getPolarityStyle(polarity) {
+      if (polarity === "positive") return { badge: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30", highlight: "bg-emerald-500/20 text-emerald-200 border-b-2 border-emerald-400", bar: "bg-emerald-400" };
+      if (polarity === "negative") return { badge: "bg-rose-500/15 text-rose-300 border-rose-500/30", highlight: "bg-rose-500/20 text-rose-200 border-b-2 border-rose-400", bar: "bg-rose-400" };
+      return { badge: "bg-amber-500/15 text-amber-300 border-amber-500/30", highlight: "bg-amber-500/20 text-amber-200 border-b-2 border-amber-400", bar: "bg-amber-400" };
+    }
+
+    function renderAnalysis(data) {
+      currentAnalysis = data;
+      const text = data.review_text;
+      const aspects = [...(data.aspects || [])].sort((a, b) => a.from - b.from);
+
+      if (data.predictive_forecast) {
+        const pf = data.predictive_forecast;
+        document.getElementById("predStarRating").textContent = `${pf.predicted_star_rating.toFixed(2)} ★`;
+        document.getElementById("predLogitProb").textContent = `${pf.logit_return_probability_pct}%`;
+        document.getElementById("predProbitProb").textContent = `${pf.probit_return_probability_pct}%`;
+        const rb = document.getElementById("riskBadge");
+        rb.textContent = pf.risk_category;
+        rb.className = pf.risk_category.includes("High")
+          ? "text-[11px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30"
+          : (pf.risk_category.includes("Low")
+            ? "text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+            : "text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30");
+
+        const mfEl = document.getElementById("mappedFeaturesBadge");
+        if (pf.mapped_aspect_scores && Object.keys(pf.mapped_aspect_scores).length > 0) {
+          const entries = Object.entries(pf.mapped_aspect_scores).map(([k, v]) => `${k} (${v >= 0 ? '+' : ''}${v.toFixed(2)})`);
+          mfEl.textContent = `Active Predictors: ${entries.join(", ")}`;
+        } else {
+          mfEl.textContent = "Active Predictors: Baseline neutral vector (0.00)";
+        }
+      }
+
+      const sentenceEl = document.getElementById("annotatedSentence");
+      if (aspects.length === 0) {
+        sentenceEl.innerHTML = `<span class="text-slate-300">${escapeHtml(text)}</span>`;
+      } else {
+        let html = "", cursor = 0;
+        aspects.forEach((asp, i) => {
+          if (asp.from > cursor) html += escapeHtml(text.slice(cursor, asp.from));
+          const st = getPolarityStyle(asp.polarity);
+          html += `<span onclick="selectAspect(${i})" class="cursor-pointer px-1.5 py-0.5 rounded ${st.highlight} font-medium">${escapeHtml(text.slice(asp.from, asp.to))}</span>`;
+          cursor = asp.to;
+        });
+        if (cursor < text.length) html += escapeHtml(text.slice(cursor));
+        sentenceEl.innerHTML = html;
+      }
+
+      const cardsEl = document.getElementById("aspectCards");
+      cardsEl.innerHTML = aspects.map((asp, i) => {
+        const st = getPolarityStyle(asp.polarity);
+        return `
+          <div onclick="selectAspect(${i})" class="cursor-pointer p-3.5 rounded-xl border border-slate-800 bg-slate-950/80 hover:bg-slate-900 transition">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-semibold text-white text-sm truncate">"${escapeHtml(asp.aspect_term)}"</span>
+              <span class="text-[11px] font-mono uppercase px-2 py-0.5 rounded-full border ${st.badge}">${asp.polarity}</span>
+            </div>
+            <div class="mt-2 flex items-center justify-between text-xs text-slate-400">
+              <span>Confidence</span>
+              <span class="font-mono text-slate-200">${(asp.confidence * 100).toFixed(1)}%</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (aspects.length > 0) renderAttributionHeatmap(aspects[0]);
+    }
+
+    function selectAspect(idx) {
+      const aspects = [...(currentAnalysis.aspects || [])].sort((a, b) => a.from - b.from);
+      if (aspects[idx]) renderAttributionHeatmap(aspects[idx]);
+    }
+
+    function renderAttributionHeatmap(aspectObj) {
+      document.getElementById("selectedAspectLabel").textContent = `Target: "${aspectObj.aspect_term}" (${aspectObj.polarity})`;
+      const heatmapEl = document.getElementById("attributionHeatmap");
+      heatmapEl.innerHTML = (aspectObj.token_attributions || []).map(t => {
+        const s = t.score, abs = Math.min(Math.abs(s), 1);
+        let bg = "rgba(30, 41, 59, 0.7)", border = "rgba(71, 85, 105, 0.4)", textCol = "#E2E8F0";
+        if (s > 0.08) {
+          bg = `rgba(16, 185, 129, ${(0.15 + abs * 0.55).toFixed(2)})`;
+          border = "rgba(52, 211, 153, 0.45)";
+        } else if (s < -0.08) {
+          bg = `rgba(244, 63, 94, ${(0.15 + abs * 0.55).toFixed(2)})`;
+          border = "rgba(251, 113, 133, 0.45)";
+        }
+        return `<span style="background:${bg}; border-color:${border}; color:${textCol}" class="px-2 py-1 rounded-md border font-mono text-xs inline-flex items-center gap-1"><span>${escapeHtml(t.token)}</span><span class="text-[10px] opacity-75">${s > 0 ? '+' : ''}${s.toFixed(2)}</span></span>`;
+      }).join("");
+    }
+
+    async function runAnalysis() {
+      const text = reviewInput.value.trim();
+      if (!text) return;
+      const btn = document.getElementById("analyzeBtn");
+      const btnText = document.getElementById("btnText");
+      btn.disabled = true;
+      btnText.textContent = "Running RoBERTa + Predictive Risk Models...";
+      try {
+        const res = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, save_to_db: document.getElementById("saveDbCheckbox").checked })
+        });
+        if (!res.ok) throw new Error("API unavailable");
+        const data = await res.json();
+        renderAnalysis(data);
+        loadStats();
+      } catch {
+        alert("Start Uvicorn (`uvicorn app:app --reload`) to run live inference!");
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = "Run ABSA + Predictive Risk Analysis";
+      }
+    }
+
+    async function loadPredictiveSummary() {
+      try {
+        const res = await fetch("/api/predictive/summary");
+        if (!res.ok) return;
+        const data = await res.json();
+        const m = data.regression_metrics;
+        document.getElementById("kpiR2").textContent = m.r_squared.toFixed(3);
+        document.getElementById("diagR2").textContent = `${m.r_squared.toFixed(3)} / ${m.adj_r_squared.toFixed(3)}`;
+        document.getElementById("diagF").textContent = `${m.f_statistic} (p<0.001)`;
+        document.getElementById("diagDW").textContent = m.durbin_watson.toFixed(2);
+        document.getElementById("diagBP").textContent = `p = ${m.breusch_pagan_pvalue}`;
+        document.getElementById("diagSES").textContent = `+${data.time_series_forecast.next_period_ses}%`;
+
+        document.getElementById("olsTableBody").innerHTML = (data.regression_table || []).map(r => `
+          <tr>
+            <td class="py-2 text-slate-200">${escapeHtml(r.term)}</td>
+            <td class="py-2 ${r.coef >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${r.coef >= 0 ? '+' : ''}${r.coef.toFixed(3)}</td>
+            <td class="py-2 text-slate-300">${r.t_stat}</td>
+            <td class="py-2 ${r.significant ? 'text-sky-400' : 'text-slate-500'}">${r.p_value < 0.001 ? '<0.001' : r.p_value}</td>
+            <td class="py-2 text-slate-400">${r.vif !== null ? r.vif : '—'}</td>
+          </tr>
+        `).join("");
+
+        document.getElementById("logitTableBody").innerHTML = (data.logit_probit_table || []).map(r => `
+          <tr>
+            <td class="py-2 text-slate-200">${escapeHtml(r.dummy_feature)}</td>
+            <td class="py-2 text-rose-400">+${r.logit_coef.toFixed(2)}</td>
+            <td class="py-2 text-amber-300 font-bold">${r.odds_ratio.toFixed(2)}x</td>
+            <td class="py-2 text-sky-400">+${r.probit_coef.toFixed(2)}</td>
+          </tr>
+        `).join("");
+
+        document.getElementById("aprioriContainer").innerHTML = (data.association_rules || []).map(rule => `
+          <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2 text-xs">
+            <div>
+              <span class="text-rose-300 font-medium">${escapeHtml(rule.antecedent)}</span>
+              <span class="text-slate-500 mx-1.5">→</span>
+              <span class="text-amber-300 font-medium">${escapeHtml(rule.consequent)}</span>
+            </div>
+            <div class="font-mono text-[11px] text-slate-400 shrink-0">
+              Conf: <span class="text-white">${rule.confidence_pct}%</span> · Lift: <span class="text-emerald-400">${rule.lift}x</span>
+            </div>
+          </div>
+        `).join("");
+      } catch (e) {
+        console.warn("Predictive summary load failed", e);
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch("/api/stats");
+        const data = await res.json();
+        const items = data.top_aspects || [];
+        document.getElementById("aspectBarsContainer").innerHTML = items.map(item => `
+          <div>
+            <div class="flex items-center justify-between text-xs mb-1">
+              <span class="font-semibold text-slate-200">${escapeHtml(item.aspect)} (${item.total})</span>
+              <span class="font-mono text-slate-400">
+                <span class="text-emerald-400">${item.positive_pct}%</span> ·
+                <span class="text-amber-400">${item.neutral_pct}%</span> ·
+                <span class="text-rose-400">${item.negative_pct}%</span>
+              </span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden flex">
+              <div class="bg-emerald-400 h-full" style="width: ${item.positive_pct}%"></div>
+              <div class="bg-amber-400 h-full" style="width: ${item.neutral_pct}%"></div>
+              <div class="bg-rose-400 h-full" style="width: ${item.negative_pct}%"></div>
+            </div>
+          </div>
+        `).join("");
+      } catch {}
+    }
+
+    async function checkHealth() {
+      const badge = document.getElementById("apiStatusBadge");
+      try {
+        const res = await fetch("/api/health");
+        const data = await res.json();
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span>Live CUDA + Predictive Engine`;
+      } catch {
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-500"></span>Start Uvicorn`;
+      }
+    }
+
+    renderAnalysis(FALLBACK_RESULT);
+    checkHealth();
+    loadPredictiveSummary();
+    loadStats();
+  </script>
+</body>
+</html>

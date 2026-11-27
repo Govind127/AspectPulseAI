@@ -1,0 +1,10 @@
+torch>=2.2.0
+transformers>=4.44.0
+datasets>=2.20.0
+accelerate>=0.33.0
+evaluate>=0.4.2
+seqeval>=1.2.2
+captum>=0.7.0
+scikit-learn>=1.4.0
+pandas>=2.2.0
+numpy>=1.26.0
